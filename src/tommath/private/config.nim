@@ -4,10 +4,23 @@ template currentSourceDir(): string =
     ## Return the directory the current source file resides in.
     parentDir(currentSourcePath())
 
-when hostOS == "windows":
-    const libraryName = currentSourceDir() & "/lib/tommath.lib"
-else:
-    const libraryName = currentSourceDir() & "/lib/libtommath.a"
+when not defined(tommathPrefix):
+    const tommathPrefix = currentSourceDir()
 
-{.passC:"-I" & currentSourceDir() & "/include".}
-{.passL:libraryName.}
+when not defined(tommathIncPath):
+    const tommathIncPath = tommathPrefix / "include"
+
+when defined(vcc):
+    {.passC:"/I" & tommathIncPath.}
+else:
+    {.passC:"-I" & tommathIncPath.}
+
+when not defined(tommathLibPath):
+    const tommathLibPath = tommathPrefix / "lib"
+
+when defined(vcc):
+    const libraryPath = tommathLibPath / "tommath.lib"
+else:
+    const libraryPath = tommathLibPath / "libtommath.a"
+
+{.passL:libraryPath.}
