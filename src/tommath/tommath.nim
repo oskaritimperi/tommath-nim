@@ -1,3 +1,5 @@
+include private/config
+
 type
   mp_digit* = distinct uint32
   mp_word* = distinct uint64
