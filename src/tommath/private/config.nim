@@ -5,22 +5,22 @@ template currentSourceDir(): string =
     parentDir(currentSourcePath())
 
 when not defined(tommathPrefix):
-    const tommathPrefix = currentSourceDir()
+    const tommathPrefix* = currentSourceDir()
 
-when not defined(tommathIncPath):
-    const tommathIncPath = tommathPrefix / "include"
-
-when defined(vcc):
-    {.passC:"/I" & tommathIncPath.}
-else:
-    {.passC:"-I" & tommathIncPath.}
-
-when not defined(tommathLibPath):
-    const tommathLibPath = tommathPrefix / "lib"
+when not defined(tommathIncDir):
+    const tommathIncDir* = tommathPrefix / "include"
 
 when defined(vcc):
-    const libraryPath = tommathLibPath / "tommath.lib"
+    {.passC:"/I" & tommathIncDir.}
 else:
-    const libraryPath = tommathLibPath / "libtommath.a"
+    {.passC:"-I" & tommathIncDir.}
 
-{.passL:libraryPath.}
+when not defined(tommathLibDir):
+    const tommathLibDir* = tommathPrefix / "lib"
+
+when defined(vcc):
+    const tommathLibPath* = tommathLibDir / "tommath.lib"
+else:
+    const tommathLibPath* = tommathLibDir / "libtommath.a"
+
+{.passL:tommathLibPath.}

@@ -1,4 +1,4 @@
-include private/config
+import private/config
 
 type
   mp_digit* = distinct uint32
